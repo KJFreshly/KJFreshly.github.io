@@ -1,17 +1,20 @@
-var map;
-var placesService;
-var infowindow;
-var geocoder;
-
-var button = document.getElementById("button");
-button.addEventListener("click", main);
+const imageContainer = document.getElementById("image_container");
+const addressInput = document.getElementById("address");
+const radiusInput = document.getElementById("radius");
+const openCheckbox = document.getElementById("open");
+const ratingInput = document.getElementById("rating");
+const includeCheckbox = document.getElementById("include");
+const excludeCheckbox = document.getElementById("exclude");
+const keywordInput = document.getElementById("keywords");
+const submitButton = document.getElementById("submit");
+submitButton.addEventListener("click", main);
 
 async function main() {
     /* TODO: Verify Input */
-    var address = document.getElementById("address").value;
+    var address = addressInput.value;
 
-    geocoder = new google.maps.Geocoder();
-
+    /* Create Map Center Using Geocode */
+    var geocoder = new google.maps.Geocoder();
     var latlng;
 
     await geocoder.geocode({ address: address }, function (results, status) {
@@ -22,30 +25,43 @@ async function main() {
         }
     });
 
-    /* Create Map Center Using Geocode */
     var mapCenter = new google.maps.LatLng(latlng.lat(), latlng.lng());
-
-    map = new google.maps.Map(document.getElementById("map"), {
+    var map = new google.maps.Map(document.getElementById("map"), {
         center: mapCenter,
     });
 
-    /* TODO: Generate request from user input */
-    var request = {
+    /* TODO: Generate and validate request from user input */
+    var radius = radiusInput.value;
+    var locationRequest = {
         location: mapCenter,
-        radius: "500",
+        radius: radius,
         type: ["restaurant"],
     };
 
-    placesService = new google.maps.places.PlacesService(map);
+    /* Add information to request per user input */
+    if (openCheckbox.checked) {
+        locationRequest.openNow = true;
+    }
 
     /* Find nearby restaurants */
-    await placesService.nearbySearch(request, function (results, status) {
-        if (status == "OK") {
-            for (var i = 0; i < results.length; i++) {
-                console.log(results[i]);
+    var placesService = new google.maps.places.PlacesService(map);
+    var searchResults = await asyncNearbySearch(placesService, locationRequest);
+
+    /* TODO: Get place_id from each location object from searchResults to use in place_details */
+    var placeids = [];
+    searchResults.forEach((location) => placeids.push(location.place_id));
+
+    console.log(placeids);
+}
+
+async function asyncNearbySearch(service, request) {
+    return new Promise((resolve, reject) => {
+        service.nearbySearch(request, function (results, status) {
+            if (status == "OK") {
+                resolve(results);
+            } else {
+                reject(status);
             }
-        } else {
-            alert("search failed");
-        }
+        });
     });
 }
