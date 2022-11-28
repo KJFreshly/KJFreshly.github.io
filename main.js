@@ -1,4 +1,5 @@
 const resultContainer = document.getElementById("result_container");
+const decisionContainer = document.getElementById("decision_container");
 const addressInput = document.getElementById("address");
 const radiusInput = document.getElementById("radius");
 const openCheckbox = document.getElementById("open");
@@ -12,6 +13,11 @@ submitButton.addEventListener("click", main);
 var restaurants = [];
 
 async function main() {
+    /* Clear Previous DOM Elements */
+    while (resultContainer.firstChild) {
+        resultContainer.removeChild(resultContainer.firstChild);
+    }
+
     /* Validate Inputs */
     /* Address */
     var address = addressInput.value;
@@ -37,7 +43,7 @@ async function main() {
     try {
         var minRating = parseFloat(ratingSelect.value);
     } catch (e) {
-        alert("INVALID MINIMUM RATING");
+        alert(e);
         return;
     }
 
@@ -101,28 +107,23 @@ async function main() {
         );
     } catch (e) {
         alert(e);
+        return;
     }
 
     console.log("BEFORE FILTER");
     console.log(searchResults);
 
     /* Filter Restaurants Based On Input */
-    for (let i = searchResults.length - 1; i >= 0; i--) {
-        if (
-            searchResults[i].rating < minRating ||
-            searchResults[i].price_level > maxPrice
-        ) {
-            searchResults.pop();
-        }
-    }
+
+    searchResults = await filterSearchResults(searchResults, minRating, maxPrice);
+
+    console.log("AFTER FILTER");
+    console.log(searchResults);
 
     if (searchResults.length == 0) {
         alert("NO RESULTS AFTER FILTER");
         return;
     }
-
-    console.log("BEFORE FILTER");
-    console.log(searchResults);
 
     /* Show Results */
     for (let i = 0; i < searchResults.length; i++) {
@@ -132,9 +133,17 @@ async function main() {
         Price Level: ${searchResults[i].price_level}`;
         resultContainer.appendChild(el);
     }
+
+    /* Show Random Decision */
+    var randomIndex = Math.floor(Math.random() * searchResults.length - 1);
+    var randomEl = document.createElement('p');
+    randomEl.textContent = `YOUR CHOICE: ${searchResults[randomIndex].name} / 
+        RATING: ${searchResults[randomIndex].rating} / 
+        PRICE LEVEL: ${searchResults[randomIndex].price_level}`;
+    decisionContainer.appendChild(randomEl);
 }
 
-async function asyncNearbySearch(service, request) {
+const asyncNearbySearch = async(service, request) => {
     return new Promise((resolve, reject) => {
         service.nearbySearch(request, function (results, status) {
             if (status == "OK") {
@@ -144,4 +153,26 @@ async function asyncNearbySearch(service, request) {
             }
         });
     });
+}
+
+const filterSearchResults = async(resultsArray, minRating, maxPrice) => {
+    return new Promise((resolve, reject) => {
+        let newArray = resultsArray;
+        let i = 0;
+        while (i < newArray.length) {
+            if (
+                newArray[i].rating < minRating ||
+                newArray[i].price_level >= maxPrice
+            ) {
+                newArray.splice(i, 1);
+            } else {
+                i++;
+            }
+        }
+        if (resultsArray != null) {
+            resolve(newArray);
+        } else {
+            reject(alert("FILTER ERROR"));
+        }       
+    })
 }
