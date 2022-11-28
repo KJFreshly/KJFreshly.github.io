@@ -1,32 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>EatSheet</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div id="input_container">
-            <input type="text" id="address" placeholder="Address">
-            <input type="text" id="radius" placeholder="Meter Radius">
-            <input type="checkbox" id="open" name="open" value="Open">
-            <label for="open">Currently Open</label>
-            <input type="text" id="rating" max="5" placeholder="Minimum Rating">
-            <input type="checkbox" id="include" name="include" value="Include">
-            <label for="include">Include Keywords</label>
-            <input type="checkbox" id="exclude" name="exclude" value="Exclude">
-            <label for="exclude">Exclude Keywords</label>
-            <input type="text" id="keywords" placeholder="Keywords">
-            <button id="submit">Submit</button>
-        </div>
-        <div id="map"></div>
-        <div id="image_container"></div>
-    
-        <!-- Maps API -->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4BHs3jq1bYY-2uvk7V9YEsMJ9VnVkpMI&libraries=places"></script>
 
-        <!-- Load scripts / React component -->
-	    <script src="main.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EatSheet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="input_container">
+        <input type="text" id="address" placeholder="Address">
+        <input type="text" id="radius" placeholder="Meter Radius">
+        <input type="checkbox" id="open" name="open" value="Open">
+        <label for="open">Currently Open</label>
+        <label for="rating">Minimum Rating</label>
+        <select name="rating" id="rating">
+            <option value="0">Any</option>
+            <option value="1">1-2 Star</option>
+            <option value="2">2-3 Star</option>
+            <option value="3">3-4 Star</option>
+            <option value="4">4-5 Star</option>
+        </select>
+        <label for="price">Maximum Price Level</label>
+        <select name="price" id="price">
+            <option value="4">4 (Most Expensive)</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
+            <option value="1">1 (Cheapest)</option>
+        </select>
+        <button id="submit">Submit</button>
+    </div>
+    <div id="map"></div>
+    <div id="result_container"></div>
+
+    <!-- Maps API -->
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4BHs3jq1bYY-2uvk7V9YEsMJ9VnVkpMI&libraries=places"></script>
+
+    <!-- Load scripts / React component -->
+    <script src="main.js"></script>
+</body>
+
 </html>
