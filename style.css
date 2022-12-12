@@ -1,5 +1,6 @@
 body {
-    height: 100vh;
+    position: relative;
+    min-height: 100vh;
     background-image: -webkit-radial-gradient(rgb(142, 242, 255), rgb(225, 247, 246));
     display: flex;
     justify-content: center;
@@ -8,6 +9,7 @@ body {
     font-weight: 600;
     font-size: 1.2em;
     color: rgb(34, 26, 107);
+    text-align: center;
 }
 
 #container {
@@ -16,6 +18,7 @@ body {
     width: 70%;
     justify-content: center;
     align-items: center;
+    margin-bottom: 25px;
 }
 
 input[type=checkbox] {
@@ -64,6 +67,7 @@ a {
 #suggestion_container {
     width: 100%;
     margin-top: 10px;
+    text-align: center;
 }
 
 #suggestion_container img {
@@ -82,9 +86,9 @@ a {
 }
 
 footer {
-    position: fixed;
+    position: absolute;
     bottom: 0;
+    height: 10px;
     width: 100%;
     text-align: center;
-    margin-top: 5px;
 }
