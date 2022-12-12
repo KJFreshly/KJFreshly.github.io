@@ -11,6 +11,7 @@ const keywordInput = document.getElementById("keyword");
 const submitContainer = document.getElementById("submit_container");
 const submitButton = document.getElementById("submit");
 const beginButton = document.getElementById("begin");
+const welcomeContainer = document.getElementById("welcome_container")
 const continueButton = document.getElementById("continue");
 const continueContainer = document.getElementById("continue_container");
 const waitingContainer = document.getElementById("waiting_container");
@@ -36,10 +37,8 @@ const inputs = [document.getElementById("input_a"), document.getElementById("inp
 
 /* Display First Input Field (inputs[0]) */
 function begin() {
-    beginButton.classList.add("hidden");
-    continueContainer.classList.remove("hidden");    
-    inputs.forEach((e) => {e.classList.add("hidden")})
-    inputIndexCounter = 0;
+    welcomeContainer.classList.add("hidden");
+    continueContainer.classList.remove("hidden");
     inputs[0].classList.remove("hidden");
 }
 
@@ -165,9 +164,9 @@ function suggestRandomRestaurant() {
 
     submitContainer.firstElementChild.textContent = "Unhappy with this suggestion?";
 
-    var randomIndex = Math.floor(Math.random() * (restaurants.length));
-    displaySuggestedRestaurant(restaurants[randomIndex]);
-    console.log(restaurants[randomIndex]);
+    suggestedRestaurantIndex = Math.floor(Math.random() * (restaurants.length));
+    displaySuggestedRestaurant(restaurants[suggestedRestaurantIndex]);
+    console.log(restaurants.length);
 }
 
 /* Splices The Currently Suggested Restaurant From The restaurants Array And Suggests Another */
@@ -187,7 +186,7 @@ function displaySuggestedRestaurant(restaurant) {
     document.getElementById("randomH").textContent = restaurant.name;
     document.getElementById("randomRATING").textContent = `User Rating: ${restaurant.rating}`;
     document.getElementById("randomPRICE").textContent = `Price Level: ${restaurant.price_level}`;
-    document.getElementById("randomA").href = `https://www.google.com/maps/place/?q=place_id:${restaurant.placeid}`
+    document.getElementById("randomA").href = `https://www.google.com/maps/place/?q=place_id:${restaurant.place_id}`
 
     suggestionContainer.classList.remove("hidden");
 }

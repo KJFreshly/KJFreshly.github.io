@@ -14,7 +14,10 @@
 
 <body>
     <div id="container">
-        <button id="begin" class="btn btn-light btn-lg">Begin</button>
+        <div id="welcome_container">
+            <h3>Let's find you a great place to eat</h3>
+            <button id="begin" class="btn btn-light btn-lg">Begin</button>
+        </div>
         <div id="input_a" class="input_container hidden form-group">
             <label for="address">Please enter the full address from which you will be looking for nearby
                 restaurants (Street Address, City, State)...</label>
@@ -55,7 +58,7 @@
                 <p id="randomPRICE"></p>
             </div>
             <a id="randomA" href="" target="_blank">
-                <h3>Take me here!</h3>
+                <h3>Take me here</h3>
             </a>
         </div>
         <div id="submit_container" class="input_container hidden">
@@ -71,6 +74,11 @@
         </div>
         <div id="map"></div>
     </div>
+
+    <footer>
+        <a href="https://github.com/KJFreshly">https://github.com/KJFreshly</a>
+    </footer>
+
     <!-- Maps API -->
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4BHs3jq1bYY-2uvk7V9YEsMJ9VnVkpMI&libraries=places"></script>
