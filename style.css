@@ -1,4 +1,78 @@
-#image_container {
+body {
+    height: 100vh;
+    background-image: -webkit-radial-gradient(rgb(142, 242, 255), rgb(225, 247, 246));
     display: flex;
-    width: 80%;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace;
+    font-weight: 600;
+    font-size: 1.2em;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type=checkbox] {
+    transform: scale(1.5);
+    -ms-transform: scale(1.5);
+    -moz-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    -o-transform: scale(1.5);
+    padding: 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+button {
+    background-color: aliceblue;
+}
+
+label,
+p {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+select {
+    margin-bottom: 10px;
+}
+
+a {
+    text-decoration: none;
+}
+
+#continue_container,
+.input_container,
+#suggestion_container,
+#waiting_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.5s linear;
+}
+
+#suggestion_container {
+    width: 100%;
+}
+
+#suggestion_container img {
+    max-width: 80%;
+    max-height: 50%;
+    margin-bottom: 10px;
+}
+
+.hidden {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s linear;
 }
