@@ -121,6 +121,7 @@ const asyncNearbySearch = async(service, request) => {
     });
 }
 
+/* Loading wheel during fetching */
 function displayWaiting() {
     submitContainer.classList.add("hidden");
     waitingContainer.classList.remove("hidden");
@@ -180,6 +181,7 @@ function suggestDifferentRestaurant() {
     suggestRandomRestaurant();
 }
 
+/* Display the randomly selected restaurant's information */
 function displaySuggestedRestaurant(restaurant) {
     document.getElementById("randomP").textContent = "We Suggest Eating At...";
     document.getElementById("randomIMG").src = restaurant.photos[Math.floor(Math.random() * restaurant.photos.length)].getUrl();
