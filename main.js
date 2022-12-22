@@ -1,6 +1,8 @@
 /* DOM Element Variables */
 const suggestionContainer = document.getElementById("suggestion_container");
 const addressInput = document.getElementById("address");
+const cityInput = document.getElementById("city");
+const stateInput = document.getElementById("state");
 const radiusInput = document.getElementById("radius");
 const openCheckbox = document.getElementById("open");
 const ratingSelect = document.getElementById("rating");
@@ -11,7 +13,7 @@ const keywordInput = document.getElementById("keyword");
 const submitContainer = document.getElementById("submit_container");
 const submitButton = document.getElementById("submit");
 const beginButton = document.getElementById("begin");
-const welcomeContainer = document.getElementById("welcome_container")
+const welcomeContainer = document.getElementById("welcome_container");
 const continueButton = document.getElementById("continue");
 const continueContainer = document.getElementById("continue_container");
 const waitingContainer = document.getElementById("waiting_container");
@@ -25,15 +27,19 @@ continueButton.addEventListener("click", nextInput);
 var restaurants = [];
 var suggestedRestaurantIndex;
 var values = {
-    address: null,
+    location: null,
     radius: null,
     currentlyOpen: false,
     minRating: null,
     maxPrice: null,
-}
+};
 var inputIndexCounter = 0;
-const inputs = [document.getElementById("input_a"), document.getElementById("input_b"), 
-                document.getElementById("input_c"), document.getElementById("input_d")];
+const inputs = [
+    document.getElementById("input_a"),
+    document.getElementById("input_b"),
+    document.getElementById("input_c"),
+    document.getElementById("input_d"),
+];
 
 /* Display First Input Field (inputs[0]) */
 function begin() {
@@ -50,34 +56,19 @@ async function searchForRestaurants() {
     }
 
     displayWaiting();
-    
-    /* Get Lat/Lng of Address */
-    var geocoder = new google.maps.Geocoder();
-    var latlng;
-    try {
-        await geocoder.geocode({ address: values.address }, function (results, status) {
-            if (status == "OK") {
-                latlng = results[0].geometry.location;
-            } else {
-                alert("INVALID ADDRESS");
-                return;
-            }
-        });
-    } catch (e) {
-        location.reload();
-        return;
-    }
-    
 
     /* Create User Location Using Geocoded Lat/Lng */
-    var userLocation = new google.maps.LatLng(latlng.lat(), latlng.lng());
+    let location = new google.maps.LatLng(
+        values.location.lat(),
+        values.location.lng()
+    );
     var map = new google.maps.Map(document.getElementById("map"), {
-        center: userLocation,
+        center: location,
     });
 
     /* Generate Nearby Search Request */
     var locationRequest = {
-        location: userLocation,
+        location: location,
         radius: values.radius,
         openNow: values.currentlyOpen,
         type: ["restaurant"],
@@ -87,14 +78,18 @@ async function searchForRestaurants() {
     var placesService = new google.maps.places.PlacesService(map);
     try {
         await asyncNearbySearch(placesService, locationRequest);
-    } catch(e) {
+    } catch (e) {
         alert(e);
         location.reload();
         return;
     }
 
     /* Filter Restaurants Based On Input */
-    restaurants = await filterSearchResults(restaurants, values.minRating, values.maxPrice);
+    restaurants = await filterSearchResults(
+        restaurants,
+        values.minRating,
+        values.maxPrice
+    );
 
     if (restaurants.length == 0) {
         alert("NO RESULTS");
@@ -107,7 +102,7 @@ async function searchForRestaurants() {
 
 /* An Async Wrapper Function For Maps API Nearby Search That Paginates Through All Results
    (Up To 60 Total) */
-const asyncNearbySearch = async(service, request) => {
+const asyncNearbySearch = async (service, request) => {
     return new Promise((resolve, reject) => {
         service.nearbySearch(request, function (results, status, pagination) {
             if (status !== "OK") reject(status);
@@ -117,9 +112,9 @@ const asyncNearbySearch = async(service, request) => {
             } else {
                 resolve(results);
             }
-        })
+        });
     });
-}
+};
 
 /* Loading wheel during fetching */
 function displayWaiting() {
@@ -132,10 +127,11 @@ function pushSearchResults(results) {
     for (let i = 0; i < results.length; i++) {
         restaurants.push(results[i]);
     }
+    console.log(restaurants);
 }
 
 /* Filters Through Array Of Restaurants And Splices Based On Given Properties */
-const filterSearchResults = async(resultsArray, minRating, maxPrice) => {
+const filterSearchResults = async (resultsArray, minRating, maxPrice) => {
     return new Promise((resolve, reject) => {
         let newArray = resultsArray;
         let i = 0;
@@ -153,9 +149,9 @@ const filterSearchResults = async(resultsArray, minRating, maxPrice) => {
             resolve(newArray);
         } else {
             reject(alert("FILTER ERROR"));
-        }       
-    })
-}
+        }
+    });
+};
 
 /* Picks A Random Index From Restaurant Array */
 function suggestRandomRestaurant() {
@@ -163,9 +159,10 @@ function suggestRandomRestaurant() {
     submitContainer.classList.remove("hidden");
     submitButton.textContent = "Show Me Another Restaurant";
 
-    submitContainer.firstElementChild.textContent = "Unhappy with this suggestion?";
+    submitContainer.firstElementChild.textContent =
+        "Unhappy with this suggestion?";
 
-    suggestedRestaurantIndex = Math.floor(Math.random() * (restaurants.length));
+    suggestedRestaurantIndex = Math.floor(Math.random() * restaurants.length);
     displaySuggestedRestaurant(restaurants[suggestedRestaurantIndex]);
     console.log(restaurants.length);
 }
@@ -184,22 +181,35 @@ function suggestDifferentRestaurant() {
 /* Display the randomly selected restaurant's information */
 function displaySuggestedRestaurant(restaurant) {
     document.getElementById("randomP").textContent = "We Suggest Eating At...";
-    document.getElementById("randomIMG").src = restaurant.photos[Math.floor(Math.random() * restaurant.photos.length)].getUrl();
+    if (restaurant.photos) {
+        document.getElementById("randomIMG").src =
+            restaurant.photos[
+                Math.floor(Math.random() * restaurant.photos.length)
+            ].getUrl();
+    }
     document.getElementById("randomH").textContent = restaurant.name;
-    document.getElementById("randomRATING").textContent = `User Rating: ${restaurant.rating}`;
-    document.getElementById("randomPRICE").textContent = `Price Level: ${restaurant.price_level}`;
-    document.getElementById("randomA").href = `https://www.google.com/maps/place/?q=place_id:${restaurant.place_id}`
+    document.getElementById(
+        "randomRATING"
+    ).textContent = `User Rating: ${restaurant.rating}`;
+    document.getElementById(
+        "randomPRICE"
+    ).textContent = `Price Level: ${restaurant.price_level}`;
+    document.getElementById(
+        "randomA"
+    ).href = `https://www.google.com/maps/dir/?api=1&destination=${restaurant.name
+        .split(" ")
+        .join("+")}&destination_place_id=${restaurant.place_id}`;
 
     suggestionContainer.classList.remove("hidden");
 }
 
 /* Shows And Hides The Different Stages Of User Input Container Divs Based On inputIndexCounter*/
-function nextInput() {
+async function nextInput() {
     if (inputIndexCounter >= inputs.length) {
         return;
     }
 
-    if (!validateInput(inputIndexCounter)) {
+    if (!(await validateInput(inputIndexCounter))) {
         return;
     }
 
@@ -216,8 +226,8 @@ function nextInput() {
 }
 
 /* Runs Corresponding Validation Methods Based On Which User Input Div Is Currently Active */
-function validateInput(inputIndex) {
-    switch(inputIndex) {
+async function validateInput(inputIndex) {
+    switch (inputIndex) {
         case 0:
             return validateAddress();
         case 1:
@@ -229,9 +239,21 @@ function validateInput(inputIndex) {
     }
 }
 
-function validateAddress() {
-    values.address = addressInput.value;
-    if (!values.address) {
+async function validateAddress() {
+    let geocoder = new google.maps.Geocoder();
+    let fullAddress = `${addressInput.value}, ${cityInput.value} ${stateInput.value}`;
+    try {
+        await geocoder.geocode(
+            { address: fullAddress },
+            function (results, status) {
+                if (status === "OK") {
+                    values.location = results[0].geometry.location;
+                } else {
+                    return false;
+                }
+            }
+        );
+    } catch (e) {
         alert("INVALID ADDRESS");
         return false;
     }
@@ -243,7 +265,12 @@ function validateAddress() {
         return false;
     }
 
-    if (values.radius == null || isNaN(values.radius) || values.radius < 1 || values.radius > 20) {
+    if (
+        values.radius == null ||
+        isNaN(values.radius) ||
+        values.radius < 1 ||
+        values.radius > 20
+    ) {
         alert("INVALID RADIUS");
         return false;
     }
@@ -266,7 +293,12 @@ function validateRating() {
         return false;
     }
 
-    if (values.minRating == null || isNaN(values.minRating) ||values.minRating < 0.0 || values.minRating > 4.0) {
+    if (
+        values.minRating == null ||
+        isNaN(values.minRating) ||
+        values.minRating < 0.0 ||
+        values.minRating > 4.0
+    ) {
         alert("INVALID MINIMUM RATING");
         return false;
     }
@@ -282,7 +314,12 @@ function validatePrice() {
         return false;
     }
 
-    if (values.maxPrice == null || isNaN(values.maxPrice) ||values.maxPrice < 1 || values.maxPrice > 4) {
+    if (
+        values.maxPrice == null ||
+        isNaN(values.maxPrice) ||
+        values.maxPrice < 1 ||
+        values.maxPrice > 4
+    ) {
         alert("INVALID MAXIMUM PRICE");
         return false;
     }
